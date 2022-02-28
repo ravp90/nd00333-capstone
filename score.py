@@ -4,18 +4,17 @@ import os
 import pickle
 import traceback
 import pandas as pd
-from sklearn.externals import joblib
+import joblib
 
 def init():
     global model
-    model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'automl_model.pkl')
+    model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'model.pkl')
     model = joblib.load(model_path)
-    #with open(model_path, 'rb') as f:
-     #   model = pickle.load(f)
-
+    
 def run(data):
     try:
-        data = np.array(json.loads(data))
+        data = json.loads(data)['data']
+        data = pd.DataFrame.from_dict(data)
         result = model.predict(data)
         return result.tolist()
     except Exception as e:
