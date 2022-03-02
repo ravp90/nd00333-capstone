@@ -38,10 +38,13 @@ For the `automl` settings and configuration, the task was set to `classification
 ### Results
 The best AutoML model was a VotingEnsemble with an `accuracy` of `0.868`. In addition to the timout being 1 hour and 5 concurrent iterations, the `featurization` was also set to `auto` and `enable_early_stopping` was set to `true`. The models from AutoML did not perform as well as the much simpler logistic regression method using hyperdrive. One potential way to improve this is by setting the `enable_early_stopping` to `false` because looking at the data it appears the stopping criteria is met becauase there are 10 steps with no improvement in accuracy, but the AutoML algorithm will still run 2 more steps and in one of those the VotingEnsemble was found. So perhaps the iterative approach at finding the best model was terminated early by this configuration. 
 
-### AutoML Run Details
+AutoML Run Details - the image below shows the run details widget from the AutoML run.
 ![AutoMLRunDetails](images/AutoML_RunDetails.PNG)
-### AutoML Best Model
+
+AutoML Best Model - the image below shows the best model from the AutoML run is loaded, the type is VotingEnsemble and the next cell shows the file `aml_model.joblib` is a copy of the model that is loaded back into the notebook and shows the VotingEnsemble model structure from the file. 
 ![AuotMLBestModel1](images/AutoML_BestModel.PNG)
+
+AutoML Run ID - the following image shows the cell with the full output from the executed run for AutoML. The run ID is shown alongside the other parameters from the AutoML run and configuration. 
 ![AuotMLBestModel1](images/AutoML_BestModel_2.PNG)
 
 ## Hyperparameter Tuning
@@ -52,16 +55,17 @@ For the hyperparamete search using Hyperdrive, a scikit-learn logistic regressio
 ### Results
 The best logistic regression model had a `regularization` value of `1` and `maximum iterations` set to `25`. The `accuracy` of the model was `0.882`, marginally better than the AutoML VotingEnsemble model. For improvements, it looks like the regularization parameter could be refined to add more values between the 0.1 to 10 range as the values selected were all increasing by a factor of 10. The maximum iterations being increased from 25 to 50 or 100 may also be useful to see if the same model could have been improved with further iterations. With an accuracy of 88% though, this model has very good predictive capability.
 
-### Hyperdrive Run Details
+Hyperdrive Run Details - the following image shows the run details widget from the Hyperdrive. This appeared to freeze after 5 runs in the notebook so a screenshot of the same experiment run is also provided. The run ID is visible in the widget screenshot. 
 ![HyperdriveRunDetails](images/HyperDrive_RunDetails.PNG)
-### Hyperdrive Experiment Run
+
+Hyperdrive Experiment Run - the experiment run overview is shown with the 12 experiment results in this image, the Parent Run ID can be seen to match the Run ID in the widget above, given this is from the same run. 
 ![HyperdriveExperiment](images/HyperDrive_ExperimentRun.PNG)
-### Hyperdrive Best Model
+
+Hyperdrive Best Model - the image below shows the output from the run execution cell at the top, with the run ID, configuration parameters and score from the best model. The best model was extracted from this and copied into the provided `hd_model.joblib` in this repository. The file is loaded into the notebook and the output from the load shows the model is a Logistic Regression model object with a regularization parameter (C) of 1.0 and max_iter is 25. These parameters are also visible in the screenshot below. 
 ![HyperdriveBestModel](images/Hyperdrive_BestModel.PNG)
 
 
 ## Model Deployment
-*TODO*: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
 The deployed model is the Hyperdrive Logistic Regression model. A script was created for hyperdrive inference, `hd_score.py`. In the notebook there is a cell which creates the `InferenceConfig` with this script and the environment. 
 
 The model is deployed as an ACI endpoint using the `AciWebService` class and the `deploy_configuration` method, where the cpu cores and memory can be set. 
@@ -90,8 +94,29 @@ data = {"data":
         ]
         }
 ```
-The `"data"` dictionary key can contain a list of multiple JSON inputs to post to the deployed model. The `data` variable must be converted to an input using `json.dumps(data)` and that input can be posted to the endpoint using `service.run(input)`. The endpoint service will return the values for the classes of each input.
+The `"data"` dictionary key can contain a list of multiple JSON inputs to post to the deployed model. The `data` variable shown above must be converted to an input using:
 
+```
+json.dumps(data)
+```
+This can be written to a file, such as the `data.json` file that is available in this repository. 
+
+The headers will be required for making the post request, in this case the headers variable will be as follows:
+
+```
+headers = {'Content-Type':'application/json'}
+```
+
+Finally, a post request, using the python `requests` module, can be made to the URI by copying the URI from the endpoint and running the following command:
+
+```
+response = requests.post(URI_link, data.json, headers=headers)
+```
+
+The response variable will contain the response from the URI.
+
+Endpoint deployment - the image below shows the endpoint that was deployed and the status of the endpoint is Healthy. 
+![deployed_endpoint](images/DeployedEndpoint.PNG)
 
 ## Screen Recording
 The screencast can be found [here](https://www.youtube.com/watch?v=hZM1Ci5-v-4).
