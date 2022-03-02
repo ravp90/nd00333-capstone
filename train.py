@@ -10,7 +10,7 @@ from azureml.core.run import Run
 from azureml.core import Workspace, Dataset
 
 run = Run.get_context()
-ws = run.experiment.Workspace
+ws = run.experiment.workspace
 
 def main():
     parser = argparse.ArgumentParser()
@@ -26,11 +26,11 @@ def main():
 
     scaler = StandardScaler()
     scaler.fit(dataset.drop('target', axis=1))
-    scaler_features = scaler.transform(dataset.drop('target', axis=1))
-    df.feat = pd.DataFrame(scaler_features, columns=dataset.columns[:-1])
+    scaler_feats = scaler.transform(dataset.drop('target', axis=1))
+    df = pd.DataFrame(scaler_feats, columns=dataset.columns[:-1])
 
     df['target'] = dataset['target'].astype(int)
-    dataset = df_feat.copy()
+    dataset = df.copy()
 
     x = dataset.drop(columns=['target'])
     y = dataset['target']
@@ -40,15 +40,15 @@ def main():
     run.log("Regularization Strength: ", np.float(args.C))
     run.log("Max Iterations: ", np.int(args.max_iter))
 
-    mdoel = LogisticRegression(C = args.C, max_iter=args.max_iter)\
+    model = LogisticRegression(C = args.C, max_iter=args.max_iter)\
                     .fit(x_train, y_train)
 
     accuracy = model.score(x_test,y_test)
 
-    os.makedirs('hd_outputs', exist_ok = True)
-    joblib.dump(model, 'hd_outputs/model.joblib')
+    os.makedirs('outputs', exist_ok = True)
+    joblib.dump(model, 'outputs/model.joblib')
 
-    run.log("Accuracy: ", np.float(accuracy))
+    run.log("Accuracy", np.float(accuracy))
 
 if __name__ == '__main__':
     main()
