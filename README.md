@@ -55,7 +55,7 @@ The best logistic regression model had a `regularization` value of `1` and `maxi
 ### Hyperdrive Run Details
 ![HyperdriveRunDetails](images/Hyperdrive_RunDetails.PNG)
 ### Hyperdrive Experiment Run
-![HyperdriveExperiment](images/Hyperdrive_ExperimentRun.PNG)
+![HyperdriveExperiment](images/HyperDrive_ExperimentRun.PNG)
 ### Hyperdrive Best Model
 ![HyperdriveBestModel](images/Hyperdrive_BestModel.PNG)
 
