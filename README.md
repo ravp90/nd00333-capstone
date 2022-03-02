@@ -53,7 +53,7 @@ For the hyperparamete search using Hyperdrive, a scikit-learn logistic regressio
 The best logistic regression model had a `regularization` value of `1` and `maximum iterations` set to `25`. The `accuracy` of the model was `0.882`, marginally better than the AutoML VotingEnsemble model. For improvements, it looks like the regularization parameter could be refined to add more values between the 0.1 to 10 range as the values selected were all increasing by a factor of 10. The maximum iterations being increased from 25 to 50 or 100 may also be useful to see if the same model could have been improved with further iterations. With an accuracy of 88% though, this model has very good predictive capability.
 
 ### Hyperdrive Run Details
-![HyperdriveRunDetails](images/Hyperdrive_RunDetails.PNG)
+![HyperdriveRunDetails](images/HyperDrive_RunDetails.PNG)
 ### Hyperdrive Experiment Run
 ![HyperdriveExperiment](images/HyperDrive_ExperimentRun.PNG)
 ### Hyperdrive Best Model
